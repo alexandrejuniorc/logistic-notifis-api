@@ -1,0 +1,52 @@
+image: python:3.8-alpine3.18
+
+clone:
+  depth: full
+
+definitions:
+  steps:
+    - step: &validate-build
+        name: Validate build
+        script:
+          - rm -rf /opt/atlassian/pipelines/agent/build/.bitbucket/pipelines/generated/pipeline/pipes
+          - apk add zip npm git openssh-client
+          - eval $(ssh-agent)
+          - echo "$IT_ENGINEERING_SSH_KEY" | base64 -d | ssh-add -
+          - git clone git@bitbucket.org:whirlpool-lar/${BITBUCKET_REPO_SLUG}.git -b ${BITBUCKET_BRANCH}
+          - npm install -g typescript && npm install --omit=dev && npm run build
+          - cp -r package.json ./dist
+          - cd dist && npm install --omit=dev
+          - zip -r ../code.zip .
+        artifacts:
+          - code.zip
+
+    - step: &trigger-it-engineering-scans
+        image: python:3.8-alpine3.18
+        name: Execute IT Engineering Scans
+        script:
+          - pip3 install -r .ci/requirements.txt
+          - python3 .ci/define_it_engineering_scans_context.py
+          - source set_env.sh
+          - pipe: docker://${IT_ENG_SCANS_AWS_ACCOUNT_ID}.dkr.ecr.${IT_ENG_SCANS_AWS_DEFAULT_REGION}.amazonaws.com/lar-trigger-it-engineering-scans-pipe:stable
+            variables:
+              BITBUCKET_ACCESS_TOKEN: ${BITBUCKET_ACCESS_TOKEN}
+              PIPELINE_VARIABLES: "${IT_ENGINEERING_SCANS_VARIABLES}"
+              CUSTOM_PIPELINE_NAME: "${IT_ENGINEERING_SCANS_PIPELINE_NAME}"
+
+pipelines:
+  branches:
+    "{feature/*,bugfix/*,hotfix/*}":
+      - parallel:
+          - step: *validate-build
+          - step: *trigger-it-engineering-scans
+
+    develop:
+      - step: *validate-build
+
+    homolog:
+      - step: *validate-build
+
+    main:
+      - parallel:
+          - step: *validate-build
+          - step: *trigger-it-engineering-scans
