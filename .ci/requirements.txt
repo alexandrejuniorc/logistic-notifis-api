@@ -1,2 +1,0 @@
-awscli==1.29.68
-requests==2.31.0
