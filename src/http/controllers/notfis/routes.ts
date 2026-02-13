@@ -1,10 +1,10 @@
 import { FastifyTypedInstance } from "@/@types/fastify-instace";
-import { notifis } from "./notifis.controller";
+import { notfis } from "./notfis.controller";
 import { verifyJWT } from "@/http/middlewares/verify-jwt.middleware";
 
-export async function notifisRoutes(app: FastifyTypedInstance) {
+export async function notfisRoutes(app: FastifyTypedInstance) {
   app.addHook("onRequest", verifyJWT);
 
-  app.get("/logistics/notifis", notifis);
+  app.get("/logistics/notfis", notfis);
 }
 

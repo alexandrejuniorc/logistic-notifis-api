@@ -6,7 +6,7 @@ import {
   NOTFIS_STANDARD,
 } from "./mocked-data";
 
-export async function notifis(request: FastifyRequest, reply: FastifyReply) {
+export async function notfis(request: FastifyRequest, reply: FastifyReply) {
   try {
     const query = request.query as Record<string, string | undefined>;
 

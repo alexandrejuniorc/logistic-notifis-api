@@ -2,9 +2,25 @@ service: lar-logistic-notifis-api
 provider:
   name: aws
   runtime: nodejs18.x
+  region: us-east-1
+  profile: whirlpool-sandbox
+  deploymentBucket:
+    name: logistic-notifis-api
+  environment:
+    NODE_ENV: ${env:NODE_ENV}
+    PORT: ${env:PORT}
+    JWT_SECRET: ${env:JWT_SECRET}
+    OAUTH_CLIENT_ID: ${env:OAUTH_CLIENT_ID}
+    OAUTH_CLIENT_SECRET: ${env:OAUTH_CLIENT_SECRET}
+package:
+  patterns:
+    - dist/**
+    - node_modules/**
+  excludeDevDependencies: true
 functions:
   app:
     handler: dist/lambda.handler
+    role: arn:aws:iam::990197583423:role/lambda-worker-role
     events:
       - http: ANY /
       - http: ANY /{proxy+}

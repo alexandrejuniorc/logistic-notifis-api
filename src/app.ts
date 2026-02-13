@@ -11,7 +11,7 @@ import { ZodError } from "zod";
 import { env } from "./env";
 import { healthRoutes } from "./http/controllers/health/routes";
 import { authenticationRoutes } from "./http/controllers/authentication/routes";
-import { notifisRoutes } from "./http/controllers/notifis/routes";
+import { notfisRoutes } from "./http/controllers/notfis/routes";
 import fastifyFormbody from "@fastify/formbody";
 
 export const app = fastify().withTypeProvider<ZodTypeProvider>();
@@ -28,7 +28,7 @@ app.register(fastifyJwt, {
 
 app.register(healthRoutes);
 app.register(authenticationRoutes);
-app.register(notifisRoutes);
+app.register(notfisRoutes);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

@@ -53,7 +53,7 @@ export async function oauthToken(request: FastifyRequest, reply: FastifyReply) {
       {
         sign: {
           sub: client_id,
-          expiresIn: "1h",
+          expiresIn: "24h",
         },
       },
     );
@@ -61,7 +61,7 @@ export async function oauthToken(request: FastifyRequest, reply: FastifyReply) {
     return reply.status(200).send({
       access_token,
       token_type: "Bearer",
-      expires_in: 3600,
+      expires_in: 86400,
       scope: body.scope ?? "",
     });
   } catch (error) {
