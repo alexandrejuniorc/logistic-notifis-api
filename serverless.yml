@@ -1,10 +1,10 @@
-service: lar-gow-lambda-api-nodejs-express-boilerplate
+service: lar-logistic-notifis-api
 provider:
   name: aws
   runtime: nodejs18.x
 functions:
   app:
-    handler: dist/app.handler
+    handler: dist/lambda.handler
     events:
       - http: ANY /
       - http: ANY /{proxy+}

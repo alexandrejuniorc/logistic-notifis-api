@@ -1,0 +1,55 @@
+@BASE_URL=http://localhost:3333
+@GRANT_TYPE=client_credentials
+@CLIENT_SECRET=logisticnotifisclientsecret
+@CLIENT_ID=logisticnotifisclient
+@TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6IiIsImNsaWVudF9pZCI6ImxvZ2lzdGljbm90aWZpc2NsaWVudCIsInN1YiI6ImxvZ2lzdGljbm90aWZpc2NsaWVudCIsImlhdCI6MTc3MDk1MDcyNiwiZXhwIjoxNzcwOTU0MzI2fQ.OheVcxvfyvd369dut7yx988spyo_3oyRIajCGJJHWts
+
+
+@name = Health 
+GET {{BASE_URL}}/health
+
+###
+
+@name = oauth_token
+POST {{BASE_URL}}/oauth2/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{GRANT_TYPE}}&client_id={{CLIENT_ID}}&client_secret={{CLIENT_SECRET}}
+
+###
+
+@name = Notfis Mock
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=01743404000995&shippingNumber=0253803096
+Authorization: Bearer {{TOKEN}}
+
+###
+
+@name = Notfis Mock (Data/Hora)
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=01743404000995&dataStart=2024-07-20&dataEnd=2024-07-20&timeStart=00:00:00&timeEnd=23:59:59
+Authorization: Bearer {{TOKEN}}
+
+###
+
+@name = Notfis Mock (NF + Série + CNPJ Branch)
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=01743404000995&nfNumber=005643437&serieNumber=1&cnpjBranch=62058318000695
+Authorization: Bearer {{TOKEN}}
+
+###
+
+@name = Notfis Mock (Consignado)
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=01743404000995&nfNumber=001211186&serieNumber=3&cnpjBranch=59105999006974
+Authorization: Bearer {{TOKEN}}
+
+###
+
+@name = Notfis Mock (Erro CNPJ inválido)
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=invalid&shippingNumber=0253803096
+Authorization: Bearer {{TOKEN}}
+
+###
+
+@name = Notfis Mock (Sem NOTFIS)
+GET {{BASE_URL}}/logistics/notifis?cnpjCarrier=01743404000995&nfNumber=000000000&serieNumber=1&cnpjBranch=62058318000695
+Authorization: Bearer {{TOKEN}}
+
+
